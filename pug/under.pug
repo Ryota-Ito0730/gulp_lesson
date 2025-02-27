@@ -1,9 +1,14 @@
+include ./data/_metaData.pug
+
 doctype html
 html(lang="ja")
   head
     meta(charset="UTF-8")
-    meta(name="viewport", content="width=device-width, initial-scale=1.0")
-    title pugテスト | 下層ページです
+    meta(name="viewport", Ωcontent="width=device-width, initial-scale=1.0")
+  
+    +uniqueMeta("under")
+    
+    //- ToDo:cssとJSをuniqueMetaと同様のロジックで出力する(JSとCSSそれぞれを別の機能とする)
     link(rel="stylesheet", href="../css/under.css")
   body 
     include ./parts/_underHeader.pug
