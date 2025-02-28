@@ -7,6 +7,9 @@ import gulpSass from "gulp-sass";
 const sass = gulpSass(dartSass);
 import pug from "gulp-pug";
 
+// 画像をWebPへ変換するプラグインを読み込みます
+import webp from "gulp-webp";
+
 /**
  * Sass(SCSS)をコンパイルするタスクです
  */
@@ -41,12 +44,19 @@ const compilePug = () => {
     .pipe(gulp.dest("pug"));
 }
 
+const convertImageFiles = () => {
+  return gulp.src("img/*.{jpg,jpeg,png}")
+		.pipe(webp())
+		.pipe(gulp.dest("img"))
+}
+
 /**
  * 各ファイルを監視し、変更があったらSassやHTMLを変換します
  */
 const watchFiles = () => {
   gulp.watch("css/*.scss", compileSass)
   gulp.watch("pug/*.pug", compilePug)
+  gulp.watch("img/*.{jpg,jpeg,png}", convertImageFiles)
 }
 
 // npx gulpというコマンドを実行後、watchFilesが実行されるようにします
