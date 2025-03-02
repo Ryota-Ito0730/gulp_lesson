@@ -34,8 +34,6 @@ const compilePug = () => {
 
 /**
  * 画像を圧縮します
- * // mozjpeg({quality: 75, progressive: true}),
-　　// optipng({optimizationLevel: 5}),
  */
 const convertImage = () => {
 	return gulp.src("img/*.{jpg,jpeg,png}")
@@ -43,7 +41,7 @@ const convertImage = () => {
       mozjpeg({quality: 75, progressive: true}),
       optipng({optimizationLevel: 5}),
     ]))
-		.pipe(gulp.dest("img/webp"))
+    .pipe(gulp.dest("img/webp"))
 };
 
 // Webpに変換する場合は、上記タスクは無効化し、下記を有効化します
