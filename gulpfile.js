@@ -36,7 +36,7 @@ const compilePug = () => {
  * 画像を圧縮します
  */
 const convertImage = () => {
-	return gulp.src("img/*.{jpg,jpeg,png}")
+  return gulp.src("img/*.{jpg,jpeg,png}")
     .pipe(imagemin([
       mozjpeg({quality: 75, progressive: true}),
       optipng({optimizationLevel: 5}),
