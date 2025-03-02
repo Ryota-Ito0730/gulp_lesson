@@ -1,64 +1,65 @@
-// gulpプラグインを読み込みます
 import gulp from "gulp";
 
-// SassやPugをコンパイルするプラグインを読み込みます
+// Pugのコンパイル用プラグイン
+import pug from "gulp-pug";
+// SassをDartSassでコンパイル
 import * as dartSass from "sass";
 import gulpSass from "gulp-sass";
 const sass = gulpSass(dartSass);
-import pug from "gulp-pug";
 
+// webpに変更せずに圧縮する場合は、下記を有効にします
+import imagemin from "gulp-imagemin";
+import optipng from "imagemin-pngquant";
+import mozjpeg from "imagemin-mozjpeg";
 
-/**
- * Sass(SCSS)をコンパイルするタスクです
+//webpに変換します
+// import webp from "gulp-webp";
+
+/* Sass(SCSS)をコンパイルするタスク
  */
 const compileSass = () => {
-  // cssフォルダ直下の全てのscssファイルを取得
   return gulp.src("css/*.scss")
-    // Sassのコンパイルを実行
-    .pipe(
-      // コンパイル後のCSSを展開
-      sass({
-        outputStyle: "expanded"
-      })
-    )
-    // cssフォルダー以下に保存
+    .pipe(sass({ outputStyle: "expanded" }))
     .pipe(gulp.dest("css"));
-}
+};
 
 /**
- * Pugをコンパイルするタスクです
+ * Pugをコンパイルするタスク
  */
 const compilePug = () => {
-  // pugフォルダ直下の全てのPugファイルを取得
   return gulp.src("pug/*.pug")
-    // コンパイルを実行
-    .pipe(
-      // コンパイル後のpugを展開
-      pug({
-          pretty: true
-      })
-    )
-    // pugフォルダー以下に保存
+    .pipe(pug({ pretty: true }))
     .pipe(gulp.dest("pug"));
-}
+};
 
-// const pathConfig = {
-//   src: "img/*.{jpg,jpeg,png}",
-//   dest: "img/webp",
-// };
+/**
+ * 画像を圧縮します
+ * // mozjpeg({quality: 75, progressive: true}),
+　　// optipng({optimizationLevel: 5}),
+ */
+const convertImage = () => {
+	return gulp.src("img/*.{jpg,jpeg,png}")
+    .pipe(imagemin([
+      mozjpeg({quality: 75, progressive: true}),
+      optipng({optimizationLevel: 5}),
+    ]))
+		.pipe(gulp.dest("img/webp"))
+};
 
-// const convertImageFiles = () => {
-
+// Webpに変換する場合は、上記タスクは無効化し、下記を有効化します
+// const convertImage = () => {
+// 	return gulp.src("img/*.{jpg,jpeg,png}")
+//     .pipe(webp({quality: 50}))
+// 		.pipe(gulp.dest("img/webp"))
 // };
 
 /**
- * 各ファイルを監視し、変更があったらSassやHTMLを変換します
+ * 各ファイルを監視し、変更があったらSassやHTMLを変換するタスク
  */
 const watchFiles = () => {
   gulp.watch("css/*.scss", gulp.series(compileSass));
   gulp.watch("pug/*.pug", gulp.series(compilePug));
-  // gulp.watch(pathConfig.src, gulp.series(convertImageFiles));
-}
+  gulp.watch("img/*.{jpg,jpeg,png}", gulp.series(convertImage));
+};
 
-// npx gulpというコマンドを実行後、watchFilesが実行されるようにします
-export default gulp.series(convertImageFiles, watchFiles);
+export default gulp.series(watchFiles);
