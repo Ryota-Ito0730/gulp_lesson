@@ -1,4 +1,5 @@
 import gulp from "gulp";
+const {src, dest, watch, series} = gulp;
 
 // Pugのコンパイル用プラグイン
 import pug from "gulp-pug";
@@ -18,46 +19,46 @@ import mozjpeg from "imagemin-mozjpeg";
 /* Sass(SCSS)をコンパイルするタスク
  */
 const compileSass = () => {
-  return gulp.src("css/*.scss")
+  return src("css/*.scss")
     .pipe(sass({ outputStyle: "expanded" }))
-    .pipe(gulp.dest("css"));
+    .pipe(dest("css"));
 };
 
 /**
  * Pugをコンパイルするタスク
  */
 const compilePug = () => {
-  return gulp.src("pug/*.pug")
+  return src("pug/*.pug")
     .pipe(pug({ pretty: true }))
-    .pipe(gulp.dest("pug"));
+    .pipe(dest("pug"));
 };
 
 /**
  * 画像を圧縮します
  */
 const convertImage = () => {
-  return gulp.src("img/*.{jpg,jpeg,png}")
+  return src("img/*.{jpg,jpeg,png}")
     .pipe(imagemin([
       mozjpeg({quality: 75, progressive: true}),
       optipng({optimizationLevel: 5}),
     ]))
-    .pipe(gulp.dest("img/webp"))
+    .pipe(dest("img/webp"))
 };
 
 // Webpに変換する場合は、上記タスクは無効化し、下記を有効化します
 // const convertImage = () => {
-// 	return gulp.src("img/*.{jpg,jpeg,png}")
-//     .pipe(webp({quality: 50}))
-// 		.pipe(gulp.dest("img/webp"))
+// 	return src("img/*.{jpg,jpeg,png}")
+//    .pipe(webp({quality: 50}))
+// 		.pipe(dest("img/webp"))
 // };
 
 /**
  * 各ファイルを監視し、変更があったらSassやHTMLを変換するタスク
  */
 const watchFiles = () => {
-  gulp.watch("css/*.scss", gulp.series(compileSass));
-  gulp.watch("pug/*.pug", gulp.series(compilePug));
-  gulp.watch("img/*.{jpg,jpeg,png}", gulp.series(convertImage));
+  watch("css/*.scss", series(compileSass));
+  watch("pug/*.pug", series(compilePug));
+  watch("img/*.{jpg,jpeg,png}", series(convertImage));
 };
 
-export default gulp.series(watchFiles);
+export default series(watchFiles);
