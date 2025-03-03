@@ -1,0 +1,25 @@
+- 
+  const metaObj = {
+    top: {
+      title:"トップページ",
+      description:"pugテストのトップページです"
+    },
+    under: {
+      title:"下層ページ",
+      description:"pugテストの下層ページです"
+    },
+  };
+
+//- キーで照らし合わせする
+//- 合致したキーに紐づくtitleとdescriptionをmetaタグ内のデータとして設置
+//- 対象のHTML生成用ファイルに渡す
+mixin uniqueMeta(pageName)
+  case pageName
+    when "top"
+      title pugテスト | #{metaObj.top.title}
+      meta(name="description" content=metaObj.top.description)
+    when "under"
+      title pugテスト | #{metaObj.under.title}
+      meta(name="description" content=metaObj.under.description)
+ 
+
