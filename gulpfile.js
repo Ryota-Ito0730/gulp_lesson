@@ -19,46 +19,46 @@ import mozjpeg from "imagemin-mozjpeg";
 /* Sass(SCSS)をコンパイルするタスク
  */
 const compileSass = () => {
-  return src("css/*.scss")
+  return src("dev/scss/*.scss")
     .pipe(sass({ outputStyle: "expanded" }))
-    .pipe(dest("css"));
+    .pipe(dest("dist/assets/css"));
 };
 
 /**
  * Pugをコンパイルするタスク
  */
 const compilePug = () => {
-  return src("pug/*.pug")
+  return src("dev/pug/*.pug")
     .pipe(pug({ pretty: true }))
-    .pipe(dest("pug"));
+    .pipe(dest("dist"));
 };
 
 /**
  * 画像を圧縮します
  */
 const convertImage = () => {
-  return src("img/*.{jpg,jpeg,png}")
+  return src("dev/img/*.{jpg,jpeg,png}")
     .pipe(imagemin([
       mozjpeg({quality: 75, progressive: true}),
       optipng({optimizationLevel: 5}),
     ]))
-    .pipe(dest("img/webp"))
+    .pipe(dest("dist/assets/img"))
 };
 
 // Webpに変換する場合は、上記タスクは無効化し、下記を有効化します
 // const convertImage = () => {
-// 	return src("img/*.{jpg,jpeg,png}")
+// 	return src("dev/img/*.{jpg,jpeg,png}")
 //    .pipe(webp({quality: 50}))
-// 		.pipe(dest("img/webp"))
+// 		.pipe(dest("dist/assets/img/webp"))
 // };
 
 /**
  * 各ファイルを監視し、変更があったらSassやHTMLを変換するタスク
  */
 const watchFiles = () => {
-  watch("css/*.scss", series(compileSass));
-  watch("pug/*.pug", series(compilePug));
-  watch("img/*.{jpg,jpeg,png}", series(convertImage));
+  watch("dev/scss/*.scss", series(compileSass));
+  watch("dev/pug/*.pug", series(compilePug));
+  watch("dev/img/*.{jpg,jpeg,png}", series(convertImage));
 };
 
 export default series(watchFiles);
