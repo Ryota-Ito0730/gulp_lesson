@@ -3,6 +3,7 @@ const {src, dest, watch, series} = gulp;
 
 // Pugのコンパイル用プラグイン
 import pug from "gulp-pug";
+
 // SassをDartSassでコンパイル
 import * as dartSass from "sass";
 import gulpSass from "gulp-sass";
@@ -16,49 +17,52 @@ import mozjpeg from "imagemin-mozjpeg";
 //webpに変換します
 // import webp from "gulp-webp";
 
+// 各タスクで指定するパスを読み込み
+import pathObj from "./gulpfilePathConfig.js";
+
 /* Sass(SCSS)をコンパイルするタスク
  */
 const compileSass = () => {
-  return src("dev/scss/*.scss")
+  return src(pathObj.sass.dev)
     .pipe(sass({ outputStyle: "expanded" }))
-    .pipe(dest("dist/assets/css"));
+    .pipe(dest(pathObj.sass.dist));
 };
 
 /**
  * Pugをコンパイルするタスク
  */
 const compilePug = () => {
-  return src("dev/pug/*.pug")
+  return src(pathObj.pug.dev)
     .pipe(pug({ pretty: true }))
-    .pipe(dest("dist"));
+    .pipe(dest(pathObj.pug.dist));
 };
 
 /**
  * 画像を圧縮します
  */
 const convertImage = () => {
-  return src("dev/img/*.{jpg,jpeg,png}")
+  return src(pathObj.img.dev)
     .pipe(imagemin([
       mozjpeg({quality: 75, progressive: true}),
       optipng({optimizationLevel: 5}),
     ]))
-    .pipe(dest("dist/assets/img"))
+    .pipe(dest(pathObj.img.dist))
 };
 
 // Webpに変換する場合は、上記タスクは無効化し、下記を有効化します
 // const convertImage = () => {
-// 	return src("dev/img/*.{jpg,jpeg,png}")
-//    .pipe(webp({quality: 50}))
-// 		.pipe(dest("dist/assets/img/webp"))
+// 	return src(pathObj.img.dev)
+//     .pipe(webp({quality: 50}))
+//     .pipe(dest(pathObj.img.distWebp))
 // };
 
 /**
  * 各ファイルを監視し、変更があったらSassやHTMLを変換するタスク
  */
 const watchFiles = () => {
-  watch("dev/scss/*.scss", series(compileSass));
-  watch("dev/pug/*.pug", series(compilePug));
-  watch("dev/img/*.{jpg,jpeg,png}", series(convertImage));
+  watch(pathObj.sass.dev, series(compileSass));
+  watch(pathObj.pug.dev, series(compilePug));
+  watch(pathObj.img.dev, series(convertImage));
 };
 
 export default series(watchFiles);
