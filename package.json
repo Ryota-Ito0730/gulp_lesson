@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "devDependencies": {
-    "gulp": "^4.0.2",
+    "gulp": "^5.0.0",
     "gulp-imagemin": "^9.1.0",
     "gulp-pug": "^5.0.0",
     "gulp-sass": "^6.0.0",

@@ -41,7 +41,7 @@ const compilePug = () => {
  * 画像を圧縮します
  */
 const convertImage = () => {
-  return src(pathObj.img.dev)
+  return src(pathObj.img.dev,{encoding: false})
     .pipe(imagemin([
       mozjpeg({quality: 75, progressive: true}),
       optipng({optimizationLevel: 5}),
@@ -51,7 +51,7 @@ const convertImage = () => {
 
 // Webpに変換する場合は、上記タスクは無効化し、下記を有効化します
 // const convertImage = () => {
-// 	return src(pathObj.img.dev)
+// 	return src(pathObj.img.dev,{encoding: false})
 //     .pipe(webp({quality: 50}))
 //     .pipe(dest(pathObj.img.distWebp))
 // };
